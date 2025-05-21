@@ -13,13 +13,13 @@
 #define D5 14
 
 float lpos = 3.0;
-float Kp = 35;
-float Ki = 0.4;
-float Kd = 15;
+float Kp = 30;
+float Ki = 0.1;
+float Kd = 30;
 
 float error = 0, lastError = 0, integral = 0;
 
-const int baseSpeed = 50;
+const int baseSpeed = 80;
 
 void setup() {
   pinMode(rmf, OUTPUT);
