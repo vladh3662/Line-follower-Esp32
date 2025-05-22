@@ -12,6 +12,12 @@
 #define D4 25
 #define D5 14
 
+#define start_pin 21
+
+#define led 23
+
+bool robotReady = false;
+
 float lpos = 3.0;
 float Kp = 30;
 float Ki = 0.1;
@@ -19,7 +25,7 @@ float Kd = 30;
 
 float error = 0, lastError = 0, integral = 0;
 
-const int baseSpeed = 80;
+const int baseSpeed = 75;
 
 void setup() {
   pinMode(rmf, OUTPUT);
@@ -36,13 +42,46 @@ void setup() {
   pinMode(D4, INPUT);
   pinMode(D5, INPUT);
 
+  pinMode(start_pin, INPUT);
+  pinMode(led, OUTPUT);
+
   Serial.begin(9600);
+
+  if (digitalRead(start_pin) == HIGH) {
+    while (true) {
+      digitalWrite(led, HIGH);
+      delay(20);
+      digitalWrite(led, LOW);
+      delay(20);
+    }
+  } else if (digitalRead(start_pin) == LOW)
+    robotReady = true;
 }
 
 void loop() {
-  line_pos();
-  motor();
-  delay(5);
+  if (robotReady == true) {
+    while (digitalRead(start_pin) == LOW) {
+      digitalWrite(led, HIGH);
+      delay(20);
+      digitalWrite(led, LOW);
+      delay(20);
+    }
+    line_pos();
+    motor();
+    delay(5);
+
+    if (digitalRead(start_pin) == LOW) {
+      analogWrite(rms, 0);
+      analogWrite(lms, 0);
+
+      while (true) {
+        digitalWrite(led, HIGH);
+        delay(20);
+        digitalWrite(led, LOW);
+        delay(20);
+      }
+    }
+  }
 }
 
 void line_pos() {
